@@ -4,7 +4,6 @@ layout: default
 
 [Home](./). [CV](./assets/files/CV.pdf). [Research](./research.md). [Projects](./projects.md). [Personal](./about.md). [Blog](https://izabelej.wordpress.com/). [Links & Resources](./links-resources.md).
 
-...
 How we see the world — its present, past, and possible futures — determines how we act in it. 
 
 How do we then see and understand the world? I am interested in the development, formation, and revision of complex belief structures such as attitudes or explanations. I am also interested in how these structures relate to our behaviour and constrain our inferences.
