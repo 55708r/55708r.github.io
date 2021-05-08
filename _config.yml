@@ -1,0 +1,9 @@
+title: Izabelė Jonušaitė
+tagline:
+logo: /assets/img/logo.png
+description: I'm a MSc Cognitive Science student at University of Amsterdam
+Yoshow_downloads: true
+google_analytics:
+theme: jekyll-theme-minimal
+plugins:
+  - jekyll-seo-tag
