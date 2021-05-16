@@ -2,7 +2,7 @@
 layout: default
 ---
 
-[Home](./). [CV](./assets/files/CV.pdf). [Research](./research.md). [Projects](./projects.md). [Personal](./about.md).
+[Home](./). [CV](./assets/files/CV.pdf). [Research](./research.md). [Projects](./projects.md). [About](./about.md).
 
 How we see the world — its present, past, and possible futures — determines how we act in it. 
 
