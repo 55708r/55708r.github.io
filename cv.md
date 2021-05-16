@@ -4,8 +4,7 @@ layout: default
 
 [__Home__](./) &nbsp; [__CV__](./cv.md) &nbsp; [__Research__](./research.md) &nbsp; [__Projects__](./projects.md) &nbsp; [__About__](./about.md)
 
-#### Open Science at MBCS Initiative
 
-#### Interactions
 
-#### Teacher Selection Project
+
+[A PDF copy of my academic CV](./assets/files/CV.pdf)

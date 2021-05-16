@@ -2,9 +2,7 @@
 layout: default
 ---
 
-[Home](./). [CV](./assets/files/CV.pdf). [Research](./research.md). [Projects](./projects.md). [About](./about.md).
-
-### Research 
+[__Home__](./) &nbsp; [__CV__](./cv.md) &nbsp; [__Research__](./research.md) &nbsp; [__Projects__](./projects.md) &nbsp; [__About__](./about.md)
 
 <!--
 #### general interests:
@@ -13,9 +11,6 @@ Entertainment Commerce, Incentive Design<br/>
 <ins>Method:</ins> Computer Vision, Reinforcement Learning, <br/>
 Natural Language Processing, Causal Inference
 -->
-
-#### Working papers:
-
 
 ### Current Research
 
@@ -37,9 +32,5 @@ Natural Language Processing, Causal Inference
 
 ### Past Research
 
+#### Cognitive Processes Underlying Self-Efficacy in Expert, Novice and Beginning Teachers
 
-### Future Research
-
-
-
-[Home](./)

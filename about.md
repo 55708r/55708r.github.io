@@ -2,8 +2,8 @@
 layout: default
 ---
 
-[Home](./). [CV](./assets/files/CV.pdf). [Research](./research.md). [Projects](./projects.md). [About](./about.md).
+[__Home__](./) &nbsp; [__CV__](./cv.md) &nbsp; [__Research__](./research.md) &nbsp; [__Projects__](./projects.md) &nbsp; [__About__](./about.md)
 
-...
+<i> Coming Soon </i>
 
 [Home](./)
