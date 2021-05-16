@@ -4,8 +4,8 @@ layout: default
 
 [Home](./). [CV](./assets/files/CV.pdf). [Research](./research.md). [Projects](./projects.md). [About](./about.md).
 
-## Open Science at MBCS Initiative
+#### Open Science at MBCS Initiative
 
-## Interactions
+#### Interactions
 
-## Teacher Selection Project
+#### Teacher Selection Project
