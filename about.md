@@ -6,4 +6,3 @@ layout: default
 
 <i> Coming Soon </i>
 
-[Home](./)
