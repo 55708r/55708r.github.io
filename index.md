@@ -2,7 +2,8 @@
 layout: default
 ---
 
-[__Home__](./). [CV](./assets/files/CV.pdf). [Research](./research.md). [Projects](./projects.md). [About](./about.md).
+[__Home__](./)  [__CV__](./assets/files/CV.pdf)  [__Research__](./research.md)  [__Projects__](./projects.md)  [__About__](./about.md).
+<!-- [__Home__](./). [CV](./assets/files/CV.pdf). [Research](./research.md). [Projects](./projects.md). [About](./about.md). -->
 
 How we see the world — its present, past, and possible futures — determines how we act in it. 
 
