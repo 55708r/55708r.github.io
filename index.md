@@ -5,7 +5,7 @@ layout: default
 <!--[Home](./). [CV](./assets/files/CV.pdf). [Research](./research.md). [Projects](./projects.md). [About](./about.md). [Blog](https://izabelej.wordpress.com/). [Links & Resources](./links-resources.md).
 -->
 
-[*Home*](./). [*CV*](./assets/files/CV.pdf). [*Research*](./research.md). [*Projects*](./projects.md).
+[**Home**](./). [**CV**](./assets/files/CV.pdf). [**Research**](./research.md). [**Projects**](./projects.md).
 
 How we see the world — its present, past, and possible futures — determines how we act in it. 
 
