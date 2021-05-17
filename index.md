@@ -11,6 +11,8 @@ How do we then see and understand the world? I am interested in the development,
 
 To approach these topics, I combine computational cognitive modeling and empirical methods such as cognitive-behavioral experiments. 
 
+### Current Research
+
 Currently, I am studying people’s preferences for explanations that appeal to different causal structures of social phenomena. I am fortunate to conduct this study at the [CoCoDev Lab](https://cocodev.org/) at [Harvard University](https://psychology.fas.harvard.edu/cognition-brain-behavior) under the supervision of Asst. Prof. Tomer Ullman.
 
 I also built a computational model of interacting cognitive processes that generate attitudes. This project profoundly benefitted from supervision by Prof. Han van der Maas ([Department of Psychology](https://psyres.uva.nl/content/research-groups/programme-group-psychological-methods/programme-group-psychological-methods.html), University of Amsterdam) and Casper Hesp (Department of Psychology, University of Amsterdam; University College London), and advice from Prof. Karl Friston ([University College London](https://www.fil.ion.ucl.ac.uk/team/theoretical-neurobiology-team/)). It was hosted by the [Institute of Advanced Study](https://ias.uva.nl/) (IAS; University of Amsterdam) as a part of the [IAS Excellence Students](https://ias.uva.nl/content/news/2020/01/ias-excellence-students-2020-selected.html) program.
