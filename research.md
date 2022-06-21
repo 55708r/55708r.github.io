@@ -22,6 +22,8 @@ Natural Language Processing, Causal Inference
 
 <ins>Supervison:</ins> Asst. Prof. Tomer Ullman (Computation, Cognition, and Development Lab, Harvard University)
 
+ [SPP 2022 Invisible-Hand Poster](./assets/files/spp2022poster.pdf)
+
 #### A Generative Model of Implicit and Explicit Attitude Data
 
 <ins>Research Questions:</ins> (i) How do the processes that generate implicit and explicit attitudes interact? (ii) What phenotypes of the generative model produce data indicating phenomena such as cognitive dissonance, illusory truth effect, and polarization?
