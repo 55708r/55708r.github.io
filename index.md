@@ -6,8 +6,9 @@ layout: default
 <meta http-equiv='expires' content='0'> 
 <meta http-equiv='pragma' content='no-cache'>
 
-[__Home__](./) &nbsp; [__CV__](./cv.md) &nbsp; [__Research__](./research.md) &nbsp; [__Projects__](./projects.md) &nbsp; [__About__](./about.md)
+[__Home__](./) &nbsp; [__Research__](./research.md) &nbsp; [__Projects__](./projects.md) &nbsp; [__About__](./about.md)
 <!-- [__Home__](./). [CV](./assets/files/CV.pdf). [Research](./research.md). [Projects](./projects.md). [About](./about.md). -->
+<!-- [__CV__](./cv.md) &nbsp;  -->
 
 How we see the world — its present, past, and possible futures — determines how we act in it. 
 

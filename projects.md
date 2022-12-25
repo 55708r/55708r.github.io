@@ -2,7 +2,7 @@
 layout: default
 ---
 
-[__Home__](./) &nbsp; [__CV__](./cv.md) &nbsp; [__Research__](./research.md) &nbsp; [__Projects__](./projects.md) &nbsp; [__About__](./about.md)
+[__Home__](./) &nbsp; [__Research__](./research.md) &nbsp; [__Projects__](./projects.md) &nbsp; [__About__](./about.md)
 
 #### Open Science at MBCS Initiative
 
