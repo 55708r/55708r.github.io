@@ -2,7 +2,7 @@
 layout: default
 ---
 
-[__Home__](./) &nbsp; [__Research__](./research.md) &nbsp; [__Projects__](./projects.md) &nbsp; [__About__](./about.md)
+[__Home__](./) &nbsp; [__Research__](./research.md) &nbsp; [__Office Hours__](./officehours.md)
 
 <!--
 #### general interests:
@@ -12,7 +12,7 @@ Entertainment Commerce, Incentive Design<br/>
 Natural Language Processing, Causal Inference
 -->
 
-### Current Research
+### Past Research
 
 #### Hyperpriors in Abduction about Social Phenomena
 
