@@ -2,7 +2,7 @@
 layout: default
 ---
 
-[__Home__](./) &nbsp; [__Research__](./research.md) &nbsp; [__Office Hours__](./officehours.md)
+[__Home__](./) &nbsp; [__Research__](./research.md) &nbsp; [__Office Hours__](https://www.izabelejonusaite.com/officehours.html)
 
 <!--
 #### general interests:

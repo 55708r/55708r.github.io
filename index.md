@@ -6,13 +6,13 @@ layout: default
 <meta http-equiv='expires' content='0'> 
 <meta http-equiv='pragma' content='no-cache'>
 
-[__Home__](./) &nbsp; [__Research__](./research.md) &nbsp; [__Office Hours__](./officehours.md)
+[__Home__](./) &nbsp; [__Research__](./research.md) &nbsp; [__Office Hours__](https://www.izabelejonusaite.com/officehours.html)
 <!-- [__Home__](./). [CV](./assets/files/CV.pdf). [Research](./research.md). [Projects](./projects.md). [About](./about.md). -->
 <!-- [__CV__](./cv.md) &nbsp;  -->
 
-How we see the world — its present, past, and possible futures — determines how we act in it. 
+How we see the world — its present, past, and possible futures — determines how we act in it. How do we then see and understand the world?
 
-How do we then see and understand the world? I am interested in the development, formation, and revision of complex and compositional belief structures such as attitudes, explanations, or theories. I am also interested in how these structures relate to our behavior and constrain our inferences.
+I am interested in the development, formation, and revision of complex and compositional belief structures such as attitudes, explanations, or theories. I am also interested in how these structures relate to our behavior and constrain our inferences.
 
 To approach these topics, I combine computational cognitive modeling and empirical methods such as cognitive-behavioral experiments. I am advised by Prof. Laura Schulz and Prof. Joshua Tenenbaum.
 
