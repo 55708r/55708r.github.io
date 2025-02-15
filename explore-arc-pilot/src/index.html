@@ -1,0 +1,34 @@
+<html>
+    <meta charset="utf-8">
+
+    <head>
+        <title>Study Results Explorer</title>
+        <link rel="stylesheet" type="text/css" href="css/interface.css">
+    </head>
+    <body>
+        <h1>Study Results Explorer</h1>
+
+        Upload Directory: <input type="file" id="directoryInput" webkitdirectory multiple>
+        <br>
+        Or Upload File: <input type="file" id="fileInput">
+        <br>
+        <button id="prevFile" disabled>Previous File</button>
+        <button id="nextFile" disabled>Next File</button>
+
+        <div id="file_info">
+        </div>
+
+        <div id="task_selector">
+        </div>
+
+        <div id="task_title">
+        </div>
+
+        <div id="table_div">
+        </div>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+        <script src="js/interface.js"></script>
+    </body>
+</html>
