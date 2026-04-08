@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIU6 Study Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #242836;
+  --border: #2e3346;
+  --text: #e4e6f0;
+  --text-dim: #8b90a5;
+  --accent: #6ee7b7;
+  --accent2: #818cf8;
+  --accent3: #f472b6;
+  --warn: #fbbf24;
+  --red: #f87171;
+  --radius: 10px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.header {
+  padding: 2rem 2rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, #0f1117 0%, #1a1d27 100%);
+}
+
+.header h1 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.6rem;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+}
+
+.header p { color: var(--text-dim); margin-top: 0.3rem; font-size: 0.9rem; }
+
+.stats-bar {
+  display: flex; gap: 1.5rem; margin-top: 1rem; flex-wrap: wrap;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.6rem 1rem;
+  font-size: 0.82rem;
+}
+
+.stat strong { color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+
+.tabs {
+  display: flex; gap: 0; border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  overflow-x: auto;
+}
+
+.tab {
+  padding: 0.8rem 1.4rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.content { padding: 1.5rem 2rem 3rem; max-width: 1100px; }
+
+.topic-group {
+  margin-bottom: 2rem;
+}
+
+.topic-group-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.05rem;
+  color: var(--accent2);
+  margin-bottom: 0.8rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+
+.topic-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 0.6rem;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.topic-card:hover { border-color: var(--accent); }
+
+.topic-header {
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  user-select: none;
+}
+
+.topic-header .arrow {
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.topic-card.open .arrow { transform: rotate(90deg); }
+
+.topic-name {
+  font-weight: 600;
+  font-size: 0.92rem;
+  flex: 1;
+}
+
+.badges { display: flex; gap: 0.4rem; flex-shrink: 0; flex-wrap: wrap; }
+
+.badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.badge.slide { background: #818cf822; color: var(--accent2); }
+.badge.exercise { background: #f472b622; color: var(--accent3); }
+.badge.project { background: #6ee7b722; color: var(--accent); }
+.badge.house { background: #fbbf2422; color: var(--warn); }
+
+.priority {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.priority.high { background: #f8717133; color: var(--red); }
+.priority.med { background: #fbbf2433; color: var(--warn); }
+.priority.low { background: #6ee7b722; color: var(--accent); }
+
+.topic-body {
+  display: none;
+  padding: 0 1rem 1rem;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+.topic-card.open .topic-body { display: block; }
+
+.topic-body h4 {
+  color: var(--text);
+  font-size: 0.82rem;
+  margin: 0.8rem 0 0.3rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.topic-body h4:first-child { margin-top: 0.2rem; }
+
+.topic-body code {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--surface2);
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.78rem;
+  color: var(--accent);
+}
+
+.topic-body .ref {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: var(--accent3);
+  margin-right: 0.5rem;
+}
+
+.gap-flag {
+  background: #f8717118;
+  border-left: 3px solid var(--red);
+  padding: 0.5rem 0.8rem;
+  margin-top: 0.5rem;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.8rem;
+  color: var(--red);
+}
+
+.section-intro {
+  color: var(--text-dim);
+  font-size: 0.88rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+}
+
+.day-plan {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.day-plan h3 {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+  font-size: 1rem;
+  margin-bottom: 0.6rem;
+}
+
+.day-plan p, .day-plan li {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+.day-plan ul { padding-left: 1.2rem; }
+.day-plan li { margin-bottom: 0.3rem; }
+
+.checklist { list-style: none; padding: 0; }
+
+.checklist li {
+  display: flex; align-items: flex-start; gap: 0.5rem;
+  padding: 0.3rem 0;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.checklist input[type="checkbox"] {
+  margin-top: 0.3rem;
+  accent-color: var(--accent);
+}
+
+.filter-bar {
+  display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;
+}
+
+.filter-btn {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.7rem;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  transition: all 0.2s;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.filter-btn:hover, .filter-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #6ee7b710;
+}
+
+@media (max-width: 600px) {
+  .content { padding: 1rem; }
+  .header { padding: 1rem; }
+  .stats-bar { gap: 0.5rem; }
+  .stat { padding: 0.4rem 0.6rem; font-size: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>AIU6 // Study Dashboard</h1>
+  <p>3-day revision plan &middot; concepts mapped to slides, exercises & project code</p>
+  <div class="stats-bar">
+    <div class="stat">Slides: <strong>12 decks</strong></div>
+    <div class="stat">Exercises: <strong>6 sets</strong></div>
+    <div class="stat">Project files: <strong>15 scripts</strong></div>
+    <div class="stat">Theory topics: <strong>38</strong></div>
+    <div class="stat">Time: <strong>~13h / 3 days</strong></div>
+  </div>
+</div>
+
+<div class="tabs" id="tabs">
+  <div class="tab active" data-tab="map">Concept Map</div>
+  <div class="tab" data-tab="gaps">Project × Theory Gaps</div>
+  <div class="tab" data-tab="plan">3-Day Plan</div>
+  <div class="tab" data-tab="quiz">Quick-Fire Q&A Prep</div>
+</div>
+
+<div class="content" id="content"></div>
+
+<script>
+const topics = [
+  {
+    group: "📦 Foundations (Slides 1–4)",
+    items: [
+      {
+        name: "NumPy — arrays, operations, slicing, aggregations",
+        badges: ["slide"],
+        priority: "low",
+        slide: "Slide 1 (Numpy.pptx)",
+        body: `<h4>What to know</h4>
+ndarray creation (<code>np.array, np.zeros, np.eye, np.arange</code>), shape/dtype, slicing, boolean filtering, aggregation (<code>sum, mean, max, min, std</code>), element-wise operations, broadcasting basics.
+<h4>Where it shows up</h4>
+<span class="ref">🏠 house-prices/features.py</span> uses NumPy throughout for feature transformations.
+<span class="ref">🎯 project/features.py</span> — cosine similarity, feature matrices are NumPy arrays.
+<span class="ref">📝 exercises</span> — every model exercise starts with <code>np.array()</code> conversions.
+<h4>Key for test</h4>
+Understand <code>reshape</code> — LSTM exercises require reshaping to 3D <code>(samples, timesteps, features)</code>. This comes up repeatedly.`
+      },
+      {
+        name: "Pandas — Series, DataFrame, cleaning, groupby, merge",
+        badges: ["slide"],
+        priority: "low",
+        slide: "Slides 2–3 (Pandas Series/DataFrame)",
+        body: `<h4>What to know</h4>
+Series vs DataFrame. <code>read_csv, head, describe, info, isnull, fillna, dropna, set_index, groupby, merge</code>. Filtering with conditions (<code>df[df['x'] > 5]</code>). <code>pd.to_datetime, pd.get_dummies</code>.
+<h4>Where it shows up</h4>
+<span class="ref">🏠 house-prices</span> — heavy Pandas feature engineering: fillna strategies, ordinal encoding, grouped imputation.
+<span class="ref">🚀 spaceship/spaceship.py</span> — <code>pd.get_dummies</code>, <code>str.split</code> for cabin parsing, <code>fillna</code>.
+<span class="ref">📝 LSTM exercise</span> — <code>pd.to_datetime, set_index, iloc slicing</code> for time series.`
+      },
+      {
+        name: "Matplotlib & Seaborn — visualization types and usage",
+        badges: ["slide"],
+        priority: "low",
+        slide: "Slide 4 (MatPlotLib ir Seaborn)",
+        body: `<h4>What to know</h4>
+<code>plt.plot, plt.bar, plt.hist, plt.scatter, plt.show, plt.legend, plt.title</code>. Seaborn: <code>sns.heatmap</code> (correlation), <code>sns.boxplot, sns.pairplot, sns.catplot, sns.histplot</code>. Subplots with <code>fig, axes = plt.subplots()</code>.
+<h4>Where it shows up</h4>
+<span class="ref">📝 LSTM exercise (step 19, 24, 29)</span> — training loss curves, prediction vs actual plots, future forecasting visualization.
+<span class="ref">🚀 spaceship</span> — EDA section has commented-out heatmaps, boxplots, histograms by target.
+<h4>Key for test</h4>
+Know how to read a loss curve (train loss vs val_loss → overfitting detection). Required 4+ graphs in final project.`
+      }
+    ]
+  },
+  {
+    group: "🧠 ML Theory (Slides 5–7)",
+    items: [
+      {
+        name: "ML types — Supervised, Unsupervised, Semi-supervised, RL",
+        badges: ["slide"],
+        priority: "high",
+        slide: "Slide 5 (ML Įvadas)",
+        body: `<h4>What to know</h4>
+<strong>Supervised</strong>: labeled data → classification (discrete) or regression (continuous). <strong>Unsupervised</strong>: no labels → clustering, association, dimensionality reduction. <strong>Semi-supervised</strong>: partially labeled. <strong>Reinforcement</strong>: agent + environment + reward signal.
+<h4>Key distinction your teacher emphasizes</h4>
+"AI is basically a huge collection of if statements that the computer creates itself (millions/billions, not tens)." Know that hyperparameters control model behavior (like specifying brain size).
+<h4>Where it shows up</h4>
+<span class="ref">🎯 project</span> — your project is a <strong>multi-class supervised classification</strong> task (response text → SOLO level). Your sequence models add RL thinking (Q-learning for question selection).`
+      },
+      {
+        name: "Classification vs Regression — when to use which",
+        badges: ["slide"],
+        priority: "high",
+        slide: "Slides 5, 8–9 (ML Įvadas, SL 1-2)",
+        body: `<h4>What to know</h4>
+<strong>Classification</strong>: predict a category. Loss: <code>cross_entropy</code>. Output: softmax → probabilities. Metrics: accuracy, F1, precision, recall, confusion matrix.
+<strong>Regression</strong>: predict a number. Loss: <code>MSE</code> or <code>MAE</code>. Output: linear (no activation or 'linear'). Metrics: RMSE, R², MAE.
+<h4>Critical for your test</h4>
+Your teacher asks "which ML subtype / task type is this?" — know how to identify from a problem description.
+<h4>Where it shows up</h4>
+<span class="ref">🎯 project/modeling</span> — classification (softmax + cross_entropy).
+<span class="ref">📝 LSTM exercise</span> — regression (Dense(1) + MSE).
+<span class="ref">🏠 house-prices</span> — regression (predict price).
+<span class="ref">🚀 spaceship</span> — binary classification (sigmoid + binary_crossentropy).`
+      },
+      {
+        name: "Bias-Variance tradeoff / Overfitting vs Underfitting",
+        badges: ["slide"],
+        priority: "high",
+        slide: "Slide 6 (ML Įvadas 2)",
+        body: `<h4>What to know</h4>
+<strong>Underfitting (high bias)</strong>: model too simple, can't capture patterns. Low train accuracy AND low test accuracy.
+<strong>Overfitting (high variance)</strong>: model memorizes training data, fails on new data. High train accuracy but LOW test accuracy. The gap between train/val loss in training curves signals this.
+<h4>How to fight overfitting</h4>
+More data, simpler model, regularization (<code>Dropout</code>, L1/L2), early stopping, cross-validation.
+<h4>Where it shows up</h4>
+<span class="ref">📝 all exercises</span> — <code>EarlyStopping(patience=3/5)</code>, <code>Dropout(0.2)</code>, <code>ModelCheckpoint(save_best_only)</code> are used everywhere.
+<span class="ref">🎯 project/feedforward_nn.py</span> — Dropout + BatchNormalization + EarlyStopping. Your teacher grades you on understanding why these exist.`
+      },
+      {
+        name: "Data preprocessing — scaling, encoding, train/test split",
+        badges: ["slide"],
+        priority: "high",
+        slide: "Slide 7 (Data pre-processing)",
+        body: `<h4>What to know</h4>
+<strong>Scaling</strong>: <code>StandardScaler</code> (mean=0, std=1), <code>MinMaxScaler</code> (0-1 range), <code>RobustScaler</code> (uses median, robust to outliers). Always <code>fit</code> on train, <code>transform</code> both — NEVER fit on test (data leakage!).
+<strong>Encoding</strong>: <code>pd.get_dummies</code> (one-hot), ordinal mapping (quality scales), label encoding.
+<strong>Split</strong>: <code>train_test_split</code> for regular data, chronological split for time series (NEVER shuffle!).
+<h4>Where it shows up</h4>
+<span class="ref">📝 LSTM exercise step 6</span> — explicitly teaches data leakage: "fit scaler ONLY on train."
+<span class="ref">🏠 house-prices/features.py</span> — KNN imputation, Box-Cox transforms, robust scaling.
+<span class="ref">🎯 project/features.py</span> — TF-IDF vectorizer fit/transform, StandardScaler for handcrafted features.
+<div class="gap-flag">⚠️ DATA LEAKAGE is a concept your teacher tests on and penalizes (-2 points for "critical errors"). Know it cold.</div>`
+      }
+    ]
+  },
+  {
+    group: "📊 Traditional ML Models (Slides 8–9)",
+    items: [
+      {
+        name: "Logistic Regression",
+        badges: ["slide", "project"],
+        priority: "high",
+        slide: "Slides 8–9 (SL 1-2)",
+        body: `<h4>What to know</h4>
+Linear decision boundary. Sigmoid for binary, softmax for multiclass. Regularization: C parameter (inverse of regularization strength). <code>max_iter</code>. Uses <code>cross_entropy</code> loss.
+<h4>In your project</h4>
+<span class="ref">🎯 modeling/lr_baseline.py</span> — <code>LogisticRegression(**LR_PARAMS)</code> with <code>StratifiedKFold</code> cross-validation. <code>cross_val_predict</code> for evaluation. Feature importance via <code>clf.coef_</code> — top 10 features per SOLO class. This was your baseline: 55.1% accuracy on pilot.
+<h4>Also used</h4>
+<span class="ref">🚀 spaceship</span> — LogisticRegression as <code>final_estimator</code> in StackingClassifier.`
+      },
+      {
+        name: "SVM (Support Vector Machine)",
+        badges: ["slide", "project"],
+        priority: "med",
+        slide: "Slides 8–9",
+        body: `<h4>What to know</h4>
+Finds maximum-margin hyperplane. Kernel trick: <code>rbf</code> (default), <code>poly</code>, <code>linear</code>. Key params: <code>C</code> (penalty), <code>gamma</code> (kernel width). <code>probability=True</code> needed for stacking.
+<h4>In your project</h4>
+<span class="ref">🎯 modeling/svm.py</span> — <code>SVC(**SVM_PARAMS)</code> with same cross-validation pattern as LR.
+<span class="ref">🚀 spaceship</span> — SVC tuned with Optuna (<code>C, gamma, kernel</code>), part of stacking ensemble.`
+      },
+      {
+        name: "Random Forest & ensemble methods",
+        badges: ["slide", "project", "house"],
+        priority: "med",
+        slide: "Slides 8–9",
+        body: `<h4>What to know</h4>
+Ensemble of decision trees. Each tree sees random subset of data (bagging) + random subset of features. Key params: <code>n_estimators, max_depth, min_samples_split</code>. Not affected by feature scaling. Feature importance via <code>feature_importances_</code>.
+<h4>In your project</h4>
+<span class="ref">🎯 modeling/random_forest.py</span> — <code>RandomForestClassifier(**RF_PARAMS)</code>. Same evaluation pipeline.
+<span class="ref">🏠 house-prices/models.py</span> — <code>RandomForestRegressor</code> as one of many stacked models.`
+      },
+      {
+        name: "Gradient Boosting — XGBoost, CatBoost, LightGBM",
+        badges: ["house", "exercise"],
+        priority: "med",
+        slide: "Slides 8–9 (mentioned in SL)",
+        body: `<h4>What to know</h4>
+Boosting = sequential trees, each correcting previous errors (vs bagging = parallel). XGBoost, CatBoost, LightGBM are optimized implementations. Usually best for tabular data.
+<h4>Where it shows up</h4>
+<span class="ref">🚀 spaceship/spaceship.py</span> — CatBoost + LightGBM + SVC stacking ensemble with Optuna tuning. This is a great example of the full pattern: tune each → stack → LogisticRegression meta-learner.
+<span class="ref">🏠 house-prices/models.py</span> — CatBoost, XGBoost, LightGBM all configured with parameters from config.`
+      },
+      {
+        name: "Model stacking & Optuna hyperparameter tuning",
+        badges: ["house", "exercise"],
+        priority: "med",
+        slide: "Exercises (Optuna mentioned)",
+        body: `<h4>What to know</h4>
+<strong>Stacking</strong>: <code>StackingClassifier(estimators=[...], final_estimator=LogisticRegression(), cv=5)</code>. Base models predict → their outputs become features → meta-learner combines.
+<strong>Optuna</strong>: <code>optuna.create_study(direction='maximize')</code>, define <code>objective(trial)</code> function, <code>trial.suggest_int/float/categorical</code>. <code>study.optimize(objective, n_trials=50)</code>.
+<h4>Where it shows up</h4>
+<span class="ref">🚀 spaceship/spaceship.py</span> — complete Optuna tuning → stacking pipeline. Study this closely!
+<span class="ref">📝 exercises</span> — "Optuna pritaikyti Digit Recognizer ir House regression" was a homework.`
+      },
+      {
+        name: "Cross-validation — StratifiedKFold, evaluation metrics",
+        badges: ["slide", "project"],
+        priority: "high",
+        slide: "Slide 6 (ML Įvadas 2)",
+        body: `<h4>What to know</h4>
+<code>StratifiedKFold(n_splits=5, shuffle=True)</code> — maintains class proportions in each fold. <code>cross_val_predict</code> gets out-of-fold predictions. <code>cross_val_score</code> gets per-fold scores.
+<strong>Metrics</strong>: accuracy (overall), precision (of predicted positives, how many correct), recall (of actual positives, how many found), F1 (harmonic mean of P&R), macro F1 (average across classes).
+<h4>In your project</h4>
+<span class="ref">🎯 modeling/evaluate.py</span> — <code>full_evaluation()</code> prints classification_report, confusion matrix, AND per-boundary accuracy (0v1, 1v2, 2v3). Understand why per-boundary is important for an ordinal scale.`
+      }
+    ]
+  },
+  {
+    group: "🔮 Neural Networks (Slide 12 + exercises)",
+    items: [
+      {
+        name: "Feedforward NN architecture — layers, activation, loss",
+        badges: ["slide", "project", "exercise"],
+        priority: "high",
+        slide: "Slide NN-1 (Neuroniniai tinklai)",
+        body: `<h4>What to know</h4>
+<code>keras.Sequential()</code>. <code>Dense(units, activation='relu')</code>. Output layer: <code>Dense(1, activation='sigmoid')</code> for binary, <code>Dense(n_classes, activation='softmax')</code> for multiclass, <code>Dense(1)</code> for regression.
+Loss: <code>binary_crossentropy</code> / <code>sparse_categorical_crossentropy</code> / <code>mean_squared_error</code>.
+Optimizer: <code>adam</code> (default good choice), <code>RMSprop</code> (for RNNs).
+<h4>Key hyperparameters</h4>
+<code>hidden_layers, dropout, learning_rate, batch_size, epochs</code>. Your project requires 20-30 hyperparameter experiments with a results table.
+<h4>Where it shows up</h4>
+<span class="ref">🎯 project/feedforward_nn.py</span> — Dense + Dropout + BatchNormalization architecture with TF-IDF or GloVe input. <code>build_feedforward()</code> function. Optuna tuning.
+<span class="ref">📝 Titanic example (justo-pvz.py)</span> — simplest NN: Input→Dense(32)→Dense(16)→Dense(8)→Dense(1,sigmoid).
+<span class="ref">🚀 spaceship</span> — same pattern with StandardScaler→NN.
+<div class="gap-flag">⚠️ You MUST be able to explain every line. Teacher says: "if you can't explain 2 lines of your code, -10%."</div>`
+      },
+      {
+        name: "Embedding layer — what it does and why",
+        badges: ["slide", "exercise"],
+        priority: "high",
+        slide: "NN exercises (RNN tasks)",
+        body: `<h4>What to know</h4>
+Converts integer indices into dense vectors. <code>Embedding(input_dim=vocab_size, output_dim=50)</code>. Characters: dim ~50. Words: dim ~100-300. The model LEARNS these vectors during training (unlike GloVe which are pre-trained).
+<code>mask_zero=True</code> tells the model to ignore padding (0) values.
+<h4>Key insight from exercises</h4>
+"Instead of treating each character as a separate 1/0 vector, we let the model learn how characters relate in a 50-dimensional space (e.g., vowels may cluster together)."
+<h4>Where it shows up</h4>
+<span class="ref">📝 RNN exercises (steps 12)</span> — Embedding(len(chars), 50) for char-level, Embedding(len(unique_words), 100) for word-level.
+<span class="ref">📝 rnn/pvz_rnn.py</span> — <code>Embedding(vocab_size, 128, mask_zero=True)</code>.`
+      },
+      {
+        name: "RNN / SimpleRNN — sequence modeling, vanishing gradient",
+        badges: ["slide", "exercise"],
+        priority: "high",
+        slide: "RNN exercises",
+        body: `<h4>What to know</h4>
+Processes sequences step by step, maintaining a hidden state. <code>SimpleRNN(units=128)</code>. Suffers from vanishing gradient — forgets long-range context. That's why LSTM exists.
+<code>return_sequences=True</code>: returns output at every timestep (needed if stacking RNN layers). <code>return_sequences=False</code> (default): returns only last timestep output.
+<h4>Your teacher's explanation</h4>
+"units (128) is the neuron count — the brain capacity. Too small (16): can't memorize complex text structures. Too large (1024): overfits and memorizes the book."
+<h4>Where it shows up</h4>
+<span class="ref">📝 rnn/pvz_rnn.py</span> — two SimpleRNN layers (256 units each, return_sequences=True for first), Dropout(0.2) between them. Complete text generation pipeline.
+<span class="ref">📝 RNN exercises</span> — char-level and word-level text generation, 30 steps each.`
+      },
+      {
+        name: "LSTM — architecture, gates, time series",
+        badges: ["slide", "exercise", "project"],
+        priority: "high",
+        slide: "LSTM exercises + NN slide",
+        body: `<h4>What to know</h4>
+Long Short-Term Memory — solves vanishing gradient with gates (forget, input, output). <code>LSTM(64, return_sequences=True, input_shape=(30,1))</code>.
+Key: LSTM expects 3D input: <code>[batch_size, time_steps, features]</code>. Always reshape with <code>np.reshape(X, (X.shape[0], X.shape[1], 1))</code>.
+<h4>Time series pattern (from exercises)</h4>
+Sliding window: <code>create_dataset(data, look_back=30)</code>. Chronological split (NEVER shuffle time series!). MinMaxScaler fit on train only. Autoregressive generation: predict T+1, feed back, predict T+2.
+<h4>Where it shows up</h4>
+<span class="ref">📝 LSTM/lstm.py</span> — complete demand forecasting pipeline (30 steps). Two LSTM layers (64 units), Dropout(0.2) between, Dense(1) for regression.
+<span class="ref">🎯 project/sequence/lstm.py</span> — LSTM for question depth prediction. Input: (Q_depth, R_depth) pairs per exchange. Sliding window, zero-padding.
+<div class="gap-flag">⚠️ Know the complete LSTM pipeline: data → scale → sliding window → reshape 3D → model → predict → inverse_transform → evaluate (RMSE). This is THE big exercise.</div>`
+      },
+      {
+        name: "Text generation — temperature, seed, autoregressive loop",
+        badges: ["exercise"],
+        priority: "med",
+        slide: "RNN exercises (steps 21-30)",
+        body: `<h4>What to know</h4>
+<strong>Temperature</strong>: controls randomness. Low (0.2) = repetitive "the the the". High (1.2) = creative but error-prone. Optimal: 0.5-0.7. Implemented with <code>np.log(preds)/temperature → softmax → multinomial sampling</code>.
+<strong>Seed padding</strong>: model needs exactly <code>seq_length</code> input. Pad short seeds with spaces (<code>.rjust(seq_length, ' ')</code>), truncate long ones (<code>[-seq_length:]</code>).
+<strong>Autoregressive</strong>: predict next → append to input → drop oldest → predict next. Sliding window.
+<h4>Word-level differences</h4>
+OOV (Out-of-Vocabulary) problem: unknown words crash the model. Replace with known word. Vocabulary size explosion: Dense output layer goes from ~60 (chars) to ~3000 (words).`
+      },
+      {
+        name: "Callbacks — EarlyStopping, ModelCheckpoint",
+        badges: ["exercise", "project"],
+        priority: "high",
+        slide: "All exercise scripts",
+        body: `<h4>What to know</h4>
+<code>EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)</code> — stops when validation loss stops improving. <code>restore_best_weights</code> rolls back to the best epoch.
+<code>ModelCheckpoint('best_model.keras', save_best_only=True)</code> — saves model to disk only when it improves.
+<h4>Why your teacher emphasizes this</h4>
+"Sometimes after epoch 10, the model starts memorizing — that's bad, it loses creativity." EarlyStopping prevents wasting time. ModelCheckpoint ensures you keep the best version.
+<h4>Everywhere</h4>
+Both appear in every single neural network script in your exercises and project. Know the parameters.`
+      }
+    ]
+  },
+  {
+    group: "🤖 Transformers & Fine-tuning (Exercises + Project)",
+    items: [
+      {
+        name: "DistilBERT fine-tuning — tokenizer, Trainer, Dataset",
+        badges: ["project", "exercise"],
+        priority: "high",
+        slide: "Fine-tuning exercise + project",
+        body: `<h4>What to know</h4>
+<code>AutoTokenizer.from_pretrained("distilbert-base-uncased")</code>. <code>AutoModelForSequenceClassification.from_pretrained(name, num_labels=4)</code>.
+Custom PyTorch Dataset class with <code>__getitem__</code> returning dict of tensors. <code>TrainingArguments(output_dir, epochs, batch_size)</code>. <code>Trainer(model, args, train_dataset)</code> → <code>trainer.train()</code>.
+<h4>In your project</h4>
+<span class="ref">🎯 modeling/distilbert.py</span> — <code>ResponseDataset</code> class wrapping tokenized texts + SOLO labels. Input: <code>[CLS] original_post [SEP] target_response [SEP]</code>. Optuna tuning.
+<span class="ref">📝 fine-tuning/fine-tuning-example.py</span> — minimal BERT fine-tuning example (4 texts, sentiment). Same pattern, smaller scale.
+<div class="gap-flag">⚠️ Worth +3 bonus points. Must understand: why fine-tune (adapt pre-trained knowledge to your domain), what the tokenizer does, why [CLS] token represents the whole sequence.</div>`
+      },
+      {
+        name: "Domain-adaptive pretraining (MLM)",
+        badges: ["project"],
+        priority: "med",
+        slide: "Project only",
+        body: `<h4>What to know</h4>
+Continue pre-training DistilBERT on your specific domain (Reddit argumentative text) using Masked Language Modeling BEFORE fine-tuning on labels. Lower learning rate (2e-5 to 5e-5) to avoid destroying pre-trained knowledge. MLM: mask 15% of tokens, model predicts them.
+<h4>In your project</h4>
+<span class="ref">🎯 modeling/domain_pretrain.py</span> — reads compressed Reddit data, filters bots/short comments, runs <code>DataCollatorForLanguageModeling(mlm_probability=0.15)</code> with HuggingFace Trainer.
+<h4>Key insight</h4>
+"MOOC-BERT showed domain-adaptive pretraining was the single biggest factor in classifying cognitive presence in online discussion." Vanilla DistilBERT knows Wikipedia, not Reddit.`
+      },
+      {
+        name: "GloVe pre-trained embeddings",
+        badges: ["exercise", "project"],
+        priority: "med",
+        slide: "Exercise (use GloVe instead of Embedding layer)",
+        body: `<h4>What to know</h4>
+Pre-trained word vectors (trained on billions of words). Unlike Embedding layer (learned from scratch during training), GloVe vectors are fixed. Words with similar meanings → similar vectors. "king - man + woman ≈ queen".
+<h4>Where it shows up</h4>
+<span class="ref">📝 exercises</span> — "use GloVe embeddings instead of your own Embedding layer."
+<span class="ref">🎯 project/feedforward_nn.py</span> — <code>--representation glove</code> option. Average GloVe vectors across words → fixed-size input.`
+      },
+      {
+        name: "TF-IDF — bag-of-words text representation",
+        badges: ["project"],
+        priority: "med",
+        slide: "Project (features.py)",
+        body: `<h4>What to know</h4>
+Term Frequency × Inverse Document Frequency. TF: how often a word appears in one doc. IDF: penalizes common words across all docs. Result: sparse matrix, each column is a word. Captures WHAT words are used, not their MEANING ("happy" and "joyful" are unrelated columns).
+<h4>In your project</h4>
+<span class="ref">🎯 features.py</span> — <code>TfidfVectorizer</code> from sklearn. Combined with handcrafted features (word_count, sentence_count, discourse connectives, cosine similarity between post and response). This is what LR/SVM/RF models use.`
+      }
+    ]
+  },
+  {
+    group: "🔄 Unsupervised Learning (Slide 10)",
+    items: [
+      {
+        name: "K-Means clustering + Elbow method",
+        badges: ["slide"],
+        priority: "med",
+        slide: "Slide 10 (USL)",
+        body: `<h4>What to know</h4>
+Assign each point to nearest centroid → recalculate centroids → repeat. <code>KMeans(n_clusters=K, n_init=10, max_iter=300)</code>. Elbow method: plot WCSS (inertia) vs K, pick the "elbow" where adding more clusters gives diminishing returns.
+<h4>Metrics</h4>
+Silhouette coefficient (-1 to 1, higher = better separation). Rand Index (0-1, agreement with true labels). Calinski-Harabasz.`
+      },
+      {
+        name: "Hierarchical clustering & dendrograms",
+        badges: ["slide"],
+        priority: "low",
+        slide: "Slide 10 (USL)",
+        body: `<h4>What to know</h4>
+Bottom-up: each point starts as own cluster → merge closest pairs → repeat. Linkage methods: single (min distance), complete (max distance), average. Dendrogram shows the hierarchy. No need to predefine K. Slower on large data.`
+      },
+      {
+        name: "Association rules — Apriori algorithm",
+        badges: ["slide"],
+        priority: "low",
+        slide: "Slide 10 (USL)",
+        body: `<h4>What to know</h4>
+Finds item co-occurrences (market basket). <strong>Support</strong>: how often items appear together. <strong>Confidence</strong>: P(B|A) — if A is bought, probability of B. <strong>Lift</strong>: how much more likely than random. <code>efficient-apriori</code> library.`
+      },
+      {
+        name: "Bag of Words / CountVectorizer",
+        badges: ["slide"],
+        priority: "low",
+        slide: "Slide 10 (USL)",
+        body: `<h4>What to know</h4>
+Represent text as word counts. <code>CountVectorizer()</code> from sklearn. Stopwords: common words (the, a, is) that add no meaning — remove them for classification but KEEP them for text generation (model needs to learn natural language structure). Convert to DataFrame to see the matrix.`
+      }
+    ]
+  },
+  {
+    group: "🎮 Reinforcement Learning (Slide 11)",
+    items: [
+      {
+        name: "RL fundamentals — Agent, Environment, Reward, Q-learning",
+        badges: ["slide", "exercise", "project"],
+        priority: "high",
+        slide: "Slide 11 (RL)",
+        body: `<h4>What to know</h4>
+<strong>Agent</strong>: the learner. <strong>Environment</strong>: what it interacts with. <strong>State</strong>: current situation. <strong>Action</strong>: what agent can do. <strong>Reward</strong>: feedback signal.
+<strong>Exploration vs Exploitation</strong>: try new things vs use what you know works.
+<strong>Discount factor (gamma)</strong>: how much future rewards matter.
+<strong>Q-learning</strong>: learn Q-values (expected reward for each action in each state). Q-table: state × action → expected value.
+<h4>Where it shows up</h4>
+<span class="ref">📝 exercises</span> — "modify hyperparameters until reward reaches 300, ideally 450+."
+<span class="ref">🎯 project/report.md §5.5</span> — tabular Q-learning for question depth selection. State=(R_depth, position), Action=Q-level, Reward=depth increase. Your project IS an RL environment design.
+<div class="gap-flag">⚠️ Exercise required: tune an RL agent to get reward ≥300. Also: your project's sequence model section (§5.5) uses Q-learning concepts. Know both the simple gym-style RL AND how it maps to your project's adaptive question selection.</div>`
+      }
+    ]
+  },
+  {
+    group: "🎯 Your Final Project — Key Concepts to Explain",
+    items: [
+      {
+        name: "Feature engineering — handcrafted features + discourse connectives",
+        badges: ["project"],
+        priority: "high",
+        slide: "Project-specific",
+        body: `<h4>In your code</h4>
+<span class="ref">🎯 features.py</span> — builds: word_count, sentence_count, question_marks, exclamation_marks, post_response_sim (cosine similarity), novel_vocab_ratio. Plus discourse connective counts: causal ("because, therefore"), contrastive ("however, but"), additive ("furthermore, also"), exemplifying ("for example, such as").
+<h4>Why it matters</h4>
+These features capture structural depth signals beyond just word frequencies. Causal connectives may correlate with SOLO 3 (Relational) because integration requires explaining relationships.`
+      },
+      {
+        name: "Transition matrix — count-based sequence model",
+        badges: ["project"],
+        priority: "med",
+        slide: "Project-specific",
+        body: `<h4>In your code</h4>
+<span class="ref">🎯 sequence/transition_matrix.py</span> — <code>P(R_next | R_current, Q_depth)</code>. Counts how each (current_response_depth, question_depth) combination leads to each next_response_depth. Fully interpretable. No training needed.
+<h4>Key question it answers</h4>
+"Given the reader is at SOLO level 2, does asking a SOLO 3 question lead to a SOLO 3 response more often than asking a SOLO 2 question?"`
+      },
+      {
+        name: "Text cleaning pipeline",
+        badges: ["project"],
+        priority: "med",
+        slide: "Project-specific",
+        body: `<h4>In your code</h4>
+<span class="ref">🎯 cleaning.py</span> — two stages: <code>normalize()</code> (HTML decode, unicode fix, remove mod footer, remove delta markers, collapse whitespace) and <code>clean_full()</code> (normalize + strip quotes, URLs, markdown). Features that need raw text (quote ratio, URL count) are computed BETWEEN these stages.`
+      }
+    ]
+  }
+];
+
+const gaps = [
+  {
+    name: "LSTM 3D reshape",
+    desc: "Your project's LSTM (sequence/lstm.py) reshapes sequences into (n_samples, max_seq_len, 2). This is the same reshape pattern as the exercise LSTM, but with 2 features (Q_depth, R_depth) instead of 1. Can you explain why LSTM needs 3D input?",
+    files: "sequence/lstm.py ↔ LSTM/lstm.py step 10"
+  },
+  {
+    name: "sparse_categorical_crossentropy vs categorical_crossentropy",
+    desc: "Your exercises use sparse_categorical_crossentropy (labels are integers: 0,1,2,3). Your project's DistilBERT uses CrossEntropyLoss (PyTorch equivalent). If labels were one-hot encoded, you'd use categorical_crossentropy. Know the difference.",
+    files: "All model scripts"
+  },
+  {
+    name: "Cross-validation in your project vs time series",
+    desc: "Your project uses StratifiedKFold (shuffles OK for classification). Your LSTM exercise uses chronological split (NO shuffle for time series). Can you explain when to use each and why?",
+    files: "modeling/lr_baseline.py vs LSTM/lstm.py step 5"
+  },
+  {
+    name: "Softmax output + temperature sampling",
+    desc: "Your project's classification models use softmax → argmax (pick highest probability class). Your RNN exercises use softmax → temperature → multinomial sampling (pick probabilistically). Why the different strategies?",
+    files: "RNN exercises step 21 vs modeling/evaluate.py"
+  },
+  {
+    name: "return_sequences=True vs False",
+    desc: "Your project's LSTM sequence model and the RNN exercise pvz_rnn.py both use return_sequences=True on the first RNN layer. The LSTM exercise uses return_sequences=True on layer 1, False on layer 2. Explain the pattern.",
+    files: "sequence/lstm.py, rnn/pvz_rnn.py, LSTM/lstm.py"
+  },
+  {
+    name: "Why RMSprop for RNN but Adam for classification?",
+    desc: "Your exercises use RMSprop(lr=0.01) for text generation RNNs, but Adam for everything else. Your project's LSTM uses RMSprop too. The exercises explain: 'RMSprop handles unstable temporal gradients better.' Know this.",
+    files: "All exercise + project model scripts"
+  },
+  {
+    name: "Stacking pattern (spaceship) vs model comparison (project)",
+    desc: "Spaceship uses StackingClassifier to combine models. Your project uses compare.py to evaluate models independently and pick the best. Know when stacking helps vs when you just want to compare.",
+    files: "spaceship/spaceship.py vs modeling/compare.py"
+  },
+  {
+    name: "Data leakage in scaling",
+    desc: "Both your project (features.py) and exercises (LSTM step 6) explicitly warn about fitting scalers on test data. Your house-prices code uses KNNImputer fit on train only. Can you explain what goes wrong if you fit on all data?",
+    files: "features.py, LSTM/lstm.py, house-prices/features.py"
+  }
+];
+
+const quizQuestions = [
+  { q: "What's the difference between classification and regression?", a: "Classification predicts discrete categories (labels), regression predicts continuous numbers. Different loss functions: cross-entropy vs MSE. Different output activations: softmax/sigmoid vs linear." },
+  { q: "What is overfitting and how do you prevent it?", a: "Model memorizes training data, performs poorly on new data. Signs: train loss decreases but val_loss increases. Prevent with: Dropout, EarlyStopping, more data, simpler model, regularization (L1/L2), cross-validation." },
+  { q: "Why can't you shuffle time series data for train/test split?", a: "Because the model would learn from future data to predict the past — that's data leakage. Time series must be split chronologically: train on past, test on future." },
+  { q: "What does the Embedding layer do?", a: "Converts integer indices into dense vectors. Learns meaningful representations — similar items get similar vectors. Replaces one-hot encoding which is sparse and doesn't capture relationships." },
+  { q: "Explain return_sequences=True vs False in LSTM.", a: "True: returns output at every timestep (shape: batch×timesteps×units). Use when stacking another RNN layer on top. False: returns only the last timestep's output (shape: batch×units). Use for the final RNN layer before Dense." },
+  { q: "What is the temperature parameter in text generation?", a: "Controls randomness of predictions. Low temp (0.2): model picks highest probability → repetitive. High temp (1.2): more random picks → creative but error-prone. It divides logits before softmax, flattening or sharpening the distribution." },
+  { q: "What is data leakage and give an example.", a: "When information from outside the training set leaks into the model. Example: fitting MinMaxScaler on ALL data including test set — the scaler 'knows' the test set's min/max. Always fit_transform on train, transform-only on test." },
+  { q: "What is sparse_categorical_crossentropy?", a: "Loss function for multiclass classification where labels are integers (0,1,2,3...) not one-hot vectors. Avoids creating huge one-hot matrices. If labels were one-hot, you'd use categorical_crossentropy instead." },
+  { q: "What is K-Means and how do you choose K?", a: "Clustering algorithm: assign points to nearest centroid, recalculate centroids, repeat. Choose K with Elbow method: plot WCSS (inertia) vs K, pick the 'bend' where adding clusters gives diminishing returns." },
+  { q: "What is Q-learning?", a: "RL algorithm that learns a Q-table: expected reward for each (state, action) pair. Agent explores to fill the table, then exploits high-Q actions. Update rule uses current reward + discounted future value. Gamma controls how much future matters." },
+  { q: "How does EarlyStopping work?", a: "Monitors a metric (usually val_loss). If it doesn't improve for 'patience' epochs, training stops. restore_best_weights=True rolls back model to the epoch with best performance. Prevents overfitting and saves time." },
+  { q: "What's the difference between SimpleRNN and LSTM?", a: "SimpleRNN has vanishing gradient problem — can't learn long-range dependencies. LSTM adds gates (forget, input, output) that control information flow, allowing it to remember or forget over long sequences." },
+  { q: "What does fine-tuning a transformer mean?", a: "Taking a pre-trained model (e.g., DistilBERT, trained on Wikipedia) and continuing training on your specific task data with task-specific labels. Uses lower learning rate to avoid destroying pre-trained knowledge. Adds a classification head on top." },
+  { q: "What is TF-IDF?", a: "Term Frequency × Inverse Document Frequency. TF: how often a word appears in a document. IDF: penalizes common words. High TF-IDF = word is frequent in this doc but rare overall — it's distinctive. Creates a sparse matrix." },
+  { q: "What's the purpose of BatchNormalization?", a: "Re-standardizes values between layers (mean≈0, std≈1). Speeds up training convergence and can have a slight regularization effect. Placed after Dense layer, before or after activation." },
+  { q: "Explain the sliding window approach for sequence data.", a: "Cut a long sequence into overlapping windows of fixed length. Each window is one training example (X), and the next value is the target (Y). E.g., 40 chars → predict char 41. Window slides by 'step' positions (e.g., step=3 to reduce redundancy)." },
+];
+
+let currentTab = 'map';
+let activeFilter = 'all';
+
+function renderMap() {
+  let html = `<p class="section-intro">Every concept from your course, mapped to where it appears in slides, exercises, and your project. Click any topic to expand. Priorities are based on test likelihood + project relevance.</p>`;
+  html += `<div class="filter-bar">
+    <div class="filter-btn ${activeFilter==='all'?'active':''}" onclick="setFilter('all')">All</div>
+    <div class="filter-btn ${activeFilter==='high'?'active':''}" onclick="setFilter('high')">🔴 High priority</div>
+    <div class="filter-btn ${activeFilter==='slide'?'active':''}" onclick="setFilter('slide')">📑 In slides</div>
+    <div class="filter-btn ${activeFilter==='exercise'?'active':''}" onclick="setFilter('exercise')">📝 In exercises</div>
+    <div class="filter-btn ${activeFilter==='project'?'active':''}" onclick="setFilter('project')">🎯 In project</div>
+  </div>`;
+
+  topics.forEach(group => {
+    const filteredItems = group.items.filter(item => {
+      if (activeFilter === 'all') return true;
+      if (activeFilter === 'high') return item.priority === 'high';
+      return item.badges.includes(activeFilter);
+    });
+    if (filteredItems.length === 0) return;
+
+    html += `<div class="topic-group"><div class="topic-group-title">${group.group}</div>`;
+    filteredItems.forEach((item, i) => {
+      const id = `topic-${group.group.slice(0,5)}-${i}`;
+      html += `<div class="topic-card" id="${id}" onclick="toggleCard('${id}')">
+        <div class="topic-header">
+          <span class="arrow">▶</span>
+          <span class="topic-name">${item.name}</span>
+          <div class="badges">
+            ${item.badges.map(b => `<span class="badge ${b}">${b}</span>`).join('')}
+          </div>
+          <span class="priority ${item.priority}">${item.priority}</span>
+        </div>
+        <div class="topic-body">${item.body}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  return html;
+}
+
+function renderGaps() {
+  let html = `<p class="section-intro">These are the spots where your project uses concepts from the course, but the AI companion may have written them. Focus here to regain deep familiarity — these are exactly the kind of things your teacher will ask about during the code walkthrough.</p>`;
+  gaps.forEach((g, i) => {
+    html += `<div class="topic-card" id="gap-${i}" onclick="toggleCard('gap-${i}')">
+      <div class="topic-header">
+        <span class="arrow">▶</span>
+        <span class="topic-name">${g.name}</span>
+        <span class="priority high">study</span>
+      </div>
+      <div class="topic-body">
+        <p>${g.desc}</p>
+        <h4>Files to cross-reference</h4>
+        <p><code>${g.files}</code></p>
+      </div>
+    </div>`;
+  });
+  return html;
+}
+
+function renderPlan() {
+  return `
+<div class="day-plan">
+  <h3>Day 1 — Map & Connect (~4-5h)</h3>
+  <ul class="checklist">
+    <li><input type="checkbox"> Use this dashboard's Concept Map tab — go through all 🔴 HIGH priority topics (expand, read, check you understand)</li>
+    <li><input type="checkbox"> Open your project code alongside — for each high-priority topic, find where it appears in YOUR code and make sure you can explain it</li>
+    <li><input type="checkbox"> Read through the "Project × Theory Gaps" tab — these are your biggest risk areas for the code walkthrough</li>
+    <li><input type="checkbox"> Go through the LSTM exercise (LSTM/lstm.py) end to end — this is the most complete exercise and touches the most concepts</li>
+    <li><input type="checkbox"> Skim the spaceship/spaceship.py stacking + Optuna pattern — it's a compact example of advanced ML pipeline your teacher values</li>
+  </ul>
+</div>
+<div class="day-plan">
+  <h3>Day 2 — Deep Dive Gaps (~4-5h)</h3>
+  <ul class="checklist">
+    <li><input type="checkbox"> Walk through your DistilBERT code (modeling/distilbert.py) — explain every component: tokenizer, Dataset class, TrainingArguments, Trainer</li>
+    <li><input type="checkbox"> Walk through your feedforward NN code (modeling/feedforward_nn.py) — explain Dense, Dropout, BatchNorm, compile, fit</li>
+    <li><input type="checkbox"> Walk through your features.py — explain TF-IDF, handcrafted features, data leakage prevention</li>
+    <li><input type="checkbox"> Walk through the RNN text generation exercise (rnn/pvz_rnn.py) — explain Embedding, SimpleRNN, temperature sampling, autoregressive generation</li>
+    <li><input type="checkbox"> Review Unsupervised Learning (K-Means, Elbow method, metrics) and RL (Q-learning, agent/environment/reward) — these are slide-only topics likely to appear as theory questions</li>
+    <li><input type="checkbox"> If time: listen to lecture recording sections for any concepts that still feel shaky</li>
+  </ul>
+</div>
+<div class="day-plan">
+  <h3>Day 3 — Test Yourself & Polish (~4-5h)</h3>
+  <ul class="checklist">
+    <li><input type="checkbox"> Use the "Quick-Fire Q&A" tab — go through all 16 questions, answer out loud BEFORE revealing the answer</li>
+    <li><input type="checkbox"> Open your project, close all reference material — walk through your entire codebase and explain each file's purpose and key lines</li>
+    <li><input type="checkbox"> Practice explaining: "What's the difference between your LR baseline and DistilBERT? Why is DistilBERT better/different?"</li>
+    <li><input type="checkbox"> Practice explaining: "What is data leakage and where did you prevent it?"</li>
+    <li><input type="checkbox"> Practice explaining: "What does the LSTM do in your sequence model? How does it differ from the transition matrix?"</li>
+    <li><input type="checkbox"> Review your report.md — make sure you can 'sell' your project in 2 minutes</li>
+    <li><input type="checkbox"> Final pass: any remaining LOW priority topics you haven't covered — skim for recognition</li>
+  </ul>
+</div>
+<div class="day-plan" style="border-color: var(--warn);">
+  <h3 style="color: var(--warn);">⚡ Test Day Reminders</h3>
+  <ul>
+    <li>4 theory questions × 0.4 points each = 1.6 points (16% of grade). Questions can be from ANY topic.</li>
+    <li>Can't explain 2 lines of your code = -1 point (10%). So project code familiarity is critical.</li>
+    <li>"Blindly copying ChatGPT code and not understanding it" = max score 5/10.</li>
+    <li>Critical errors (wrong dataset for test/train, data leakage) = -2 points.</li>
+  </ul>
+</div>`;
+}
+
+function renderQuiz() {
+  let html = `<p class="section-intro">16 questions covering the concepts most likely to appear as theory questions. Try answering out loud before revealing the answer. These are calibrated to your course's specific teaching — not generic ML trivia.</p>`;
+  quizQuestions.forEach((q, i) => {
+    html += `<div class="topic-card" id="quiz-${i}" onclick="toggleCard('quiz-${i}')">
+      <div class="topic-header">
+        <span class="arrow">▶</span>
+        <span class="topic-name">Q${i+1}: ${q.q}</span>
+        <span class="priority med">0.4 pts</span>
+      </div>
+      <div class="topic-body">
+        <h4>Answer</h4>
+        <p>${q.a}</p>
+      </div>
+    </div>`;
+  });
+  return html;
+}
+
+function render() {
+  const el = document.getElementById('content');
+  switch(currentTab) {
+    case 'map': el.innerHTML = renderMap(); break;
+    case 'gaps': el.innerHTML = renderGaps(); break;
+    case 'plan': el.innerHTML = renderPlan(); break;
+    case 'quiz': el.innerHTML = renderQuiz(); break;
+  }
+}
+
+function toggleCard(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function setFilter(f) {
+  activeFilter = f;
+  render();
+}
+
+document.getElementById('tabs').addEventListener('click', e => {
+  if (!e.target.classList.contains('tab')) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  currentTab = e.target.dataset.tab;
+  activeFilter = 'all';
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
